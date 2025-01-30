@@ -1,0 +1,24 @@
+# Ignore build output
+bin/
+obj/
+out/
+
+# User-specific settings
+.vscode/
+.idea/
+*.user
+*.suo
+*.sln.docstates
+*.cache
+
+# Logs and temporary files
+*.log
+*.tmp
+
+# Dependencies managed by NuGet
+*.nuget/
+packages/
+project.lock.json
+
+# macOS system files
+.DS_Store
