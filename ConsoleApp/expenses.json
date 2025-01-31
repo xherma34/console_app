@@ -1,0 +1,44 @@
+[
+  {
+    "ID": "064565f0-15a7-477a-ad74-e5112e9c3993",
+    "Name": "Schnitzel",
+    "Amount": 250,
+    "Date": "2020-01-01T00:00:00",
+    "Category": 2
+  },
+  {
+    "ID": "f68b5d85-3781-4c78-91bb-cb67e49409ee",
+    "Name": "McDonalds",
+    "Amount": 250,
+    "Date": "2020-01-15T00:00:00",
+    "Category": 2
+  },
+  {
+    "ID": "f8a108f7-f38f-4003-b186-612d6691b290",
+    "Name": "Netflix",
+    "Amount": 400,
+    "Date": "2022-02-01T00:00:00",
+    "Category": 5
+  },
+  {
+    "ID": "ed042a61-4b17-4f66-94a0-2b2f397065f1",
+    "Name": "Amazon",
+    "Amount": 350,
+    "Date": "2022-02-01T00:00:00",
+    "Category": 5
+  },
+  {
+    "ID": "18c818e9-5fe4-4c59-9fd5-16d002bdb5ab",
+    "Name": "Badminton",
+    "Amount": 250,
+    "Date": "2022-05-11T00:00:00",
+    "Category": 0
+  },
+  {
+    "ID": "2622d407-4d86-414b-a0b1-a0366dcb6201",
+    "Name": "Cat food",
+    "Amount": 600,
+    "Date": "2023-06-11T00:00:00",
+    "Category": 3
+  }
+]

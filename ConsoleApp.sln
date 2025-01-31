@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp", "ConsoleApp.csproj", "{FE196F81-B90A-49EC-A6D5-67002AC8913D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp", "ConsoleApp/ConsoleApp.csproj", "{FE196F81-B90A-49EC-A6D5-67002AC8913D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp.Tests", "ConsoleApp.Tests/ConsoleApp.Tests.csproj", "{F8D6C0F7-B8AA-46DA-A198-FE7D3E67090E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
