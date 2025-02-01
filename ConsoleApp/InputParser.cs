@@ -95,7 +95,7 @@ public static class InputParser
 					if (opts.ContainsKey(AddOpts.Category) || i + 1 >= args.Length) return null;
 					i++;
 					Category category = GetCategory(args[i]);
-					if (category == Category.None || i + 1 >= args.Length)
+					if (category == Category.None)
 					{
 						throw new ArgumentException("Error: Invalid -c [CATEGORY] passed");
 					}
@@ -177,6 +177,14 @@ public static class InputParser
 					}
 					opts.Add(ShowOpts.AmountTo, amountTo);
 					break;
+				case "-o":
+					if (opts.ContainsKey(AddOpts.FileName) || i + 1 >= args.Length)
+					{
+						throw new ArgumentException("Error: Invalid command syntax");
+					}
+					i++;
+					opts.Add(ShowOpts.FileName, args[i]);
+					break;
 				default:
 					break;
 			}
@@ -214,6 +222,9 @@ public static class InputParser
 			case "pet": return Category.Pet;
 			case "bills": return Category.Bills;
 			case "subs": return Category.Subscriptions;
+			case "food":
+				Console.WriteLine("Returning category food");
+				return Category.Food;
 			default:
 				Console.Error.WriteLine("Error: invalid category passed");
 				return Category.None;
@@ -245,6 +256,7 @@ public enum AddOpts
 public enum RemOpts
 {
 	Id,
+	FileName,
 	none
 }
 
@@ -254,5 +266,5 @@ public enum ShowOpts
 	DateTo,
 	AmountFrom,
 	AmountTo,
-
+	FileName
 }

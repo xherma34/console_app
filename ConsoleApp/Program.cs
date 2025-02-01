@@ -23,6 +23,42 @@ class Program
 			Console.Error.WriteLine("Error: No arguments passed");
 		}
 
+		Dictionary<Enum, object> options = InputParser.ParseArguments(args);
+
+		// Get the enum type -> what command was passed
+		Type enumType = options.Keys.First().GetType();
+
+		Expenses expenses;
+
+		string fileName = "";
+
+		// TODO: refactor and use delegate here
+		// TODO: write unit tests for ADD command parsing
+		if (options.Keys.First() is AddOpts)
+		{
+			if (options.TryGetValue(AddOpts.FileName, out object value))
+			{
+				fileName = value as string ?? "";
+			}
+
+			expenses = new Expenses(fileName);
+			expenses.AddNewRecord(options);
+
+		}
+		else if (options.Keys.First() is ShowOpts)
+		{
+
+		}
+	}
+
+	public static void AddNewRecord(Dictionary<Enum, object> options, Expenses expenses)
+	{
+
+	}
+
+	public static void ShowRecords(Dictionary<Enum, object> options)
+	{
+
 	}
 
 	public static void PrintDictionary<T>(Dictionary<T, object> dict)
