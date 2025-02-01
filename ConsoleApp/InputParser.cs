@@ -25,7 +25,7 @@ public static class InputParser
 			case "add":
 				return ParseAddOptions(args);
 			case "remove":
-			// return ParseRemoveOptions(args);
+				return ParseRemoveOptions(args);
 			case "show":
 				return ParseShowOptions(args);
 
@@ -193,9 +193,34 @@ public static class InputParser
 		return opts;
 	}
 
-	private static Dictionary<Category, object> ParseRemoveOptions(string[] args)
+	private static Dictionary<Enum, object> ParseRemoveOptions(string[] args)
 	{
-		throw new NotImplementedException();
+		Dictionary<Enum, object> opts = new Dictionary<Enum, object>();
+
+		for (int i = 1; i < args.Length; i++)
+		{
+			if (args[i].ToLower() == "-id")
+			{
+				if (opts.ContainsKey(RemOpts.Id) || i + 1 >= args.Length)
+					throw new ArgumentException("Error: wrong format of REMOVE command.");
+				i++;
+				opts.Add(RemOpts.Id, Int32.Parse(args[i]));
+			}
+			else if (args[i].ToLower() == "-o")
+			{
+				if (opts.ContainsKey(RemOpts.FileName) || i + 1 >= args.Length)
+					throw new ArgumentException("Error: wrong format of REMOVE command.");
+				i++;
+				opts.Add(RemOpts.FileName, args[i]);
+			}
+			else
+			{
+				Console.WriteLine($"Option being processed: {args[i].ToLower()}");
+				throw new ArgumentException("Error: wrong format of REMOVE command.");
+			}
+		}
+
+		return opts;
 	}
 
 	private static bool IsOption(string opt)

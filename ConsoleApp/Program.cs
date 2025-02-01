@@ -28,38 +28,59 @@ class Program
 		// Get the enum type -> what command was passed
 		Type enumType = options.Keys.First().GetType();
 
-		Expenses expenses;
 
-		string fileName = "";
+		string fileName = GetFileName(options);
+		Expenses expenses = new Expenses(fileName);
 
-		// TODO: refactor and use delegate here
-		// TODO: write unit tests for ADD command parsing
 		if (options.Keys.First() is AddOpts)
 		{
-			if (options.TryGetValue(AddOpts.FileName, out object value))
-			{
-				fileName = value as string ?? "";
-			}
-
-			expenses = new Expenses(fileName);
 			expenses.AddNewRecord(options);
-
 		}
 		else if (options.Keys.First() is ShowOpts)
 		{
 
 		}
+		else
+		{
+			expenses.RemoveRecord(options);
+		}
+
+		// TODO: refactor and use delegate here
+		// TODO: write unit tests for ADD command parsing
 	}
 
-	public static void AddNewRecord(Dictionary<Enum, object> options, Expenses expenses)
+	private static string GetFileName(Dictionary<Enum, object> options)
 	{
+		if (options == null || options.Count == 0)
+			throw new ArgumentException("Internal error: Options dictionary is empty or null.");
 
+		// A dictionary to map Enum types to their respective FileName keys
+		var enumToFileNameMap = new Dictionary<Type, Enum>
+		{
+			{ typeof(AddOpts), AddOpts.FileName },
+			{ typeof(RemOpts), RemOpts.FileName },
+			{ typeof(ShowOpts), ShowOpts.FileName }
+		};
+
+		// Find the type of the first key (we assume only one type of enum will be present)
+		var enumType = options.Keys.First().GetType();
+
+		// If the type is not recognized, throw an error
+		if (!enumToFileNameMap.ContainsKey(enumType))
+			throw new ArgumentException("Internal error: Cannot parse Options dictionary");
+
+		// Get the corresponding FileName enum value for this enum type
+		Enum fileNameKey = enumToFileNameMap[enumType];
+
+		// Try to get the file name from the dictionary
+		if (options.TryGetValue(fileNameKey, out object value))
+		{
+			return value as string ?? "";
+		}
+
+		return ""; // Return an empty string if no file name was found
 	}
 
-	public static void ShowRecords(Dictionary<Enum, object> options)
-	{
-
-	}
 
 	public static void PrintDictionary<T>(Dictionary<T, object> dict)
 	{
@@ -69,7 +90,7 @@ class Program
 		}
 	}
 
-	static void PrintHelp()
+	public static void PrintHelp()
 	{
 		Console.WriteLine("You can run the program with these commands:");
 		Console.WriteLine("[ACTION] [OPTIONS]");

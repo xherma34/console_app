@@ -84,10 +84,13 @@ public class Expenses
 		throw new NotImplementedException();
 	}
 
-	private void RemoveRecord(int id)
+	public void RemoveRecord(Dictionary<Enum, object> options)
 	{
-		// TODO: 
-		throw new NotImplementedException();
+		Console.WriteLine($"Removing record of ID {(int)options[RemOpts.Id]}");
+
+		Records?.RemoveAll(record => record.Index == (int)options[RemOpts.Id]);
+
+		WriteRecords(this.FileName);
 	}
 
 }
