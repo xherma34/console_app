@@ -1,44 +1,50 @@
 [
   {
-    "ID": "064565f0-15a7-477a-ad74-e5112e9c3993",
+    "ID": "df32d093-3f1f-4fb1-86e7-f313afd8c1dc",
     "Name": "Schnitzel",
     "Amount": 250,
     "Date": "2020-01-01T00:00:00",
-    "Category": 2
+    "Category": 2,
+    "Index": 0
   },
   {
-    "ID": "f68b5d85-3781-4c78-91bb-cb67e49409ee",
+    "ID": "2cb960e0-ef69-4290-ae86-909f5383a5d0",
     "Name": "McDonalds",
     "Amount": 250,
     "Date": "2020-01-15T00:00:00",
-    "Category": 2
+    "Category": 2,
+    "Index": 1
   },
   {
-    "ID": "f8a108f7-f38f-4003-b186-612d6691b290",
+    "ID": "d264f71c-c0f1-43fe-803a-39bf0febd64d",
     "Name": "Netflix",
     "Amount": 400,
     "Date": "2022-02-01T00:00:00",
-    "Category": 5
+    "Category": 5,
+    "Index": 2
   },
   {
-    "ID": "ed042a61-4b17-4f66-94a0-2b2f397065f1",
+    "ID": "db99799d-071e-4ca7-856b-43b3d4aa9905",
     "Name": "Amazon",
     "Amount": 350,
     "Date": "2022-02-01T00:00:00",
-    "Category": 5
+    "Category": 5,
+    "Index": 3
   },
   {
-    "ID": "18c818e9-5fe4-4c59-9fd5-16d002bdb5ab",
+    "ID": "4dcee9df-37bb-4769-a948-08ff9035482c",
     "Name": "Badminton",
     "Amount": 250,
     "Date": "2022-05-11T00:00:00",
-    "Category": 0
+    "Category": 0,
+    "Index": 4
   },
   {
-    "ID": "2622d407-4d86-414b-a0b1-a0366dcb6201",
+    "ID": "bc8c0b19-2523-4b8b-be3f-3fa49d88cbb2",
     "Name": "Cat food",
     "Amount": 600,
     "Date": "2023-06-11T00:00:00",
-    "Category": 3
+    "Category": 3,
+    "Index": 5
   }
 ]
