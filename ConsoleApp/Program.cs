@@ -32,21 +32,21 @@ class Program
 		string fileName = GetFileName(options);
 		Expenses expenses = new Expenses(fileName);
 
+		// TODO: Refactor idea -> use action<> and Dictionary pointer for call at the runtime
 		if (options.Keys.First() is AddOpts)
 		{
 			expenses.AddNewRecord(options);
 		}
 		else if (options.Keys.First() is ShowOpts)
 		{
-
+			expenses.ShowRecords(options);
 		}
-		else
+		else if (options.Keys.First() is RemOpts)
 		{
 			expenses.RemoveRecord(options);
 		}
 
-		// TODO: refactor and use delegate here
-		// TODO: write unit tests for ADD command parsing
+
 	}
 
 	private static string GetFileName(Dictionary<Enum, object> options)
@@ -73,21 +73,12 @@ class Program
 		Enum fileNameKey = enumToFileNameMap[enumType];
 
 		// Try to get the file name from the dictionary
-		if (options.TryGetValue(fileNameKey, out object value))
+		if (options.TryGetValue(fileNameKey, out object? value))
 		{
 			return value as string ?? "";
 		}
 
 		return ""; // Return an empty string if no file name was found
-	}
-
-
-	public static void PrintDictionary<T>(Dictionary<T, object> dict)
-	{
-		foreach (var kvp in dict)
-		{
-			Console.WriteLine($"Key: {kvp.Key}, Value: {kvp.Value} \n");
-		}
 	}
 
 	public static void PrintHelp()

@@ -36,4 +36,18 @@ public class Record
 		Category = category;
 	}
 
+	public void PrintRecord()
+	{
+		string dateStr = Date.ToString("dd/MM/yyyy");
+		string catStr = Category.ToString();
+
+		Console.WriteLine("---------------------------------");
+		Console.WriteLine($"{"Index:",-10} {Index,20} |");
+		Console.WriteLine($"{"Name:",-10} {Name,20} |");
+		Console.WriteLine($"{"Date:",-10} {dateStr,20} |");
+		Console.WriteLine($"{"Amount:",-10} {Amount,20:C} |");
+		Console.WriteLine($"{"Category:",-10} {catStr,20} |");
+
+	}
+
 }

@@ -20,6 +20,7 @@ public static class InputParser
 
 		string command = args[0].ToLower();
 
+
 		switch (command)
 		{
 			case "add":
@@ -92,7 +93,10 @@ public static class InputParser
 					break;
 
 				case "-c":
-					if (opts.ContainsKey(AddOpts.Category) || i + 1 >= args.Length) return null;
+					if (opts.ContainsKey(AddOpts.Category) || i + 1 >= args.Length)
+					{
+						throw new ArgumentException("Error: Invalid command syntax");
+					}
 					i++;
 					Category category = GetCategory(args[i]);
 					if (category == Category.None)
@@ -121,11 +125,17 @@ public static class InputParser
 	{
 		Dictionary<Enum, object> opts = new Dictionary<Enum, object>();
 
+		// CASE: when the user only wants the .json to be printed and no filter is applied
+		if (args.Length == 1)
+		{
+			opts.Add(ShowOpts.None, "");
+		}
+
 		for (int i = 0; i < args.Length; i++)
 		{
 			switch (args[i].ToLower())
 			{
-				case "-Dfrom":
+				case "-dfrom":
 					if (opts.ContainsKey(ShowOpts.DateFrom) || i + 1 >= args.Length)
 					{
 						throw new ArgumentException("Error: Invalid command syntax");
@@ -137,7 +147,7 @@ public static class InputParser
 					}
 					opts.Add(ShowOpts.DateFrom, dateFrom);
 					break;
-				case "-Dto":
+				case "-dto":
 					if (opts.ContainsKey(ShowOpts.DateTo) || i + 1 >= args.Length)
 					{
 						throw new ArgumentException("Error: Invalid command syntax");
@@ -149,7 +159,7 @@ public static class InputParser
 					}
 					opts.Add(ShowOpts.DateTo, dateTo);
 					break;
-				case "-Afrom":
+				case "-afrom":
 					if (opts.ContainsKey(ShowOpts.AmountFrom) || i + 1 >= args.Length)
 					{
 						throw new ArgumentException("Error: Invalid command syntax");
@@ -163,7 +173,7 @@ public static class InputParser
 					}
 					opts.Add(ShowOpts.AmountFrom, amountFrom);
 					break;
-				case "-Ato":
+				case "-ato":
 					if (opts.ContainsKey(ShowOpts.AmountTo) || i + 1 >= args.Length)
 					{
 						throw new ArgumentException("Error: Invalid command syntax");
@@ -261,6 +271,7 @@ public static class InputParser
 
 }
 
+
 public enum CmdType
 {
 	Add,
@@ -282,7 +293,7 @@ public enum RemOpts
 {
 	Id,
 	FileName,
-	none
+	None
 }
 
 public enum ShowOpts
@@ -291,5 +302,6 @@ public enum ShowOpts
 	DateTo,
 	AmountFrom,
 	AmountTo,
-	FileName
+	FileName,
+	None
 }
