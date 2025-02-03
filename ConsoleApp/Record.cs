@@ -1,5 +1,8 @@
 using System;
 
+/// <summary>
+/// Class representing one record of the expenses
+/// </summary>
 public class Record
 {
 	public Guid ID { get; private set; }
@@ -9,6 +12,14 @@ public class Record
 	public Category Category { get; private set; }
 	public int Index { get; private set; }
 
+	/// <summary>
+	/// Constructor
+	/// </summary>
+	/// <param name="index">id</param>
+	/// <param name="name">Name of the payment</param>
+	/// <param name="amount">Amount paid for record</param>
+	/// <param name="date">Day of occurence of the payment</param>
+	/// <param name="category">Category of payment</param>
 	public Record(int index, string name, double amount, DateTime date, Category category)
 	{
 		ID = Guid.NewGuid();
@@ -36,6 +47,9 @@ public class Record
 		Category = category;
 	}
 
+	/// <summary>
+	/// Prints out record information in a formatted style
+	/// </summary>
 	public void PrintRecord()
 	{
 		string dateStr = Date.ToString("dd/MM/yyyy");
