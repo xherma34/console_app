@@ -14,7 +14,7 @@ public static class InputParser
 		if (args.Length == 0)
 		{
 			// TODO: implement try/catch blocks for this to work
-			throw new ArgumentException("Error: no arguments were passed to the program");
+			throw new ArgumentException("Error: No command passed to the program.");
 		}
 
 		string command = args[0].ToLower();
@@ -34,38 +34,23 @@ public static class InputParser
 				break;
 
 			default:
-				throw new ArgumentException("Error: invalid command passed to the program");
+				throw new ArgumentException("Error: Invalid command passed to the program");
 		}
 
 		if (!ContainsAllReqOpts(opts))
 		{
-			throw new ArgumentException("Error: Command doesn't contain all required options Run the program with -h for help");
+			throw new ArgumentException("Error: Command doesn't contain all required options.");
 		}
 
 		return opts;
-	}
-
-	private static bool ContainsAllReqOpts(Dictionary<Enum, object> opts)
-	{
-		if (opts.Keys.First() is AddOpts)
-		{
-			return opts.ContainsKey(AddOpts.Amount) &&
-				opts.ContainsKey(AddOpts.Category) &&
-				opts.ContainsKey(AddOpts.Date) &&
-				opts.ContainsKey(AddOpts.Name);
-		}
-		else if (opts.Keys.First() is RemOpts)
-		{
-			return opts.ContainsKey(RemOpts.Id);
-		}
-
-		return true;
 	}
 
 	// TODO: write tests for this
 	private static Dictionary<Enum, object> ParseAddOptions(string[] args)
 	{
 		Dictionary<Enum, object> opts = new Dictionary<Enum, object>();
+
+		if (args.Length == 1) throw new ArgumentException("Error: Invalid command structure.");
 
 		// Get the dictionary of options
 		for (int i = 1; i < args.Length; i++)
@@ -75,7 +60,7 @@ public static class InputParser
 				case "-n":
 					if (opts.ContainsKey(AddOpts.Name) || i + 1 >= args.Length || IsOption(args[i + 1]))
 					{
-						throw new ArgumentException("Error: Invalid command syntax");
+						throw new ArgumentException("Error: Invalid command structure.");
 					}
 					opts.Add(AddOpts.Name, args[i + 1]);
 					i++;
@@ -84,27 +69,30 @@ public static class InputParser
 				case "-a":
 					if (opts.ContainsKey(AddOpts.Amount) || i + 1 >= args.Length)
 					{
-						throw new ArgumentException("Error: Invalid command syntax");
+						throw new ArgumentException("Error: Invalid command structure.");
 					}
 					i++;
+
 					// Check if passed amount is a double value
 					if (!double.TryParse(args[i], out double value))
 					{
-						throw new ArgumentException("Invalid -a [AMOUNT] passed, Amount must be a nubmer");
-
+						throw new ArgumentException("Error: Invalid value type for option.");
 					}
+
+					if (value <= 0) throw new ArgumentException("Error: Invalid value for option.");
+
 					opts.Add(AddOpts.Amount, value);
 					break;
 
 				case "-d":
 					if (opts.ContainsKey(AddOpts.Date) || i + 1 >= args.Length)
 					{
-						throw new ArgumentException("Error: Invalid command syntax");
+						throw new ArgumentException("Error: Invalid command structure.");
 					}
 					i++;
 					if (!DateTime.TryParse(args[i], out DateTime date))
 					{
-						throw new ArgumentException("Error: Invalid -d [DATE] date format passed");
+						throw new ArgumentException("Error: Invalid value type for option.");
 					}
 					opts.Add(AddOpts.Date, date);
 					break;
@@ -112,7 +100,7 @@ public static class InputParser
 				case "-o":
 					if (opts.ContainsKey(AddOpts.FileName) || i + 1 >= args.Length)
 					{
-						throw new ArgumentException("Error: Invalid command syntax");
+						throw new ArgumentException("Error: Invalid command structure.");
 					}
 					i++;
 					opts.Add(AddOpts.FileName, args[i]);
@@ -121,13 +109,13 @@ public static class InputParser
 				case "-c":
 					if (opts.ContainsKey(AddOpts.Category) || i + 1 >= args.Length)
 					{
-						throw new ArgumentException("Error: Invalid command syntax");
+						throw new ArgumentException("Error: Invalid command structure.");
 					}
 					i++;
 					Category category = GetCategory(args[i]);
 					if (category == Category.None)
 					{
-						throw new ArgumentException("Error: Invalid -c [CATEGORY] passed");
+						throw new ArgumentException("Error: Invalid value type for option.");
 					}
 					opts.Add(AddOpts.Category, category);
 					break;
@@ -154,75 +142,80 @@ public static class InputParser
 		// CASE: when the user only wants the .json to be printed and no filter is applied
 		if (args.Length == 1)
 		{
+			// throw new ArgumentException($"Number of args XXX for {args.Length}");
 			opts.Add(ShowOpts.None, "");
+			return opts;
 		}
 
 		for (int i = 0; i < args.Length; i++)
 		{
 			switch (args[i].ToLower())
 			{
+				case "show":
+					break;
 				case "-dfrom":
 					if (opts.ContainsKey(ShowOpts.DateFrom) || i + 1 >= args.Length)
 					{
-						throw new ArgumentException("Error: Invalid command syntax");
+						throw new ArgumentException("Error: Invalid command structure.");
 					}
 					i++;
 					if (!DateTime.TryParse(args[i], out DateTime dateFrom))
 					{
-						throw new ArgumentException("Error: Invalid -d [DATE] date format passed");
+						throw new ArgumentException("Error: Invalid value type for option.");
 					}
 					opts.Add(ShowOpts.DateFrom, dateFrom);
 					break;
 				case "-dto":
 					if (opts.ContainsKey(ShowOpts.DateTo) || i + 1 >= args.Length)
 					{
-						throw new ArgumentException("Error: Invalid command syntax");
+						throw new ArgumentException("Error: Invalid command structure.");
 					}
 					i++;
 					if (!DateTime.TryParse(args[i], out DateTime dateTo))
 					{
-						throw new ArgumentException("Error: Invalid -d [DATE] date format passed");
+						throw new ArgumentException("Error: Invalid value type for option.");
 					}
 					opts.Add(ShowOpts.DateTo, dateTo);
 					break;
 				case "-afrom":
 					if (opts.ContainsKey(ShowOpts.AmountFrom) || i + 1 >= args.Length)
 					{
-						throw new ArgumentException("Error: Invalid command syntax");
+						throw new ArgumentException("Error: Invalid command structure.");
 					}
 					i++;
 					// Check if passed amount is a double value
 					if (!double.TryParse(args[i], out double amountFrom))
 					{
-						throw new ArgumentException("Invalid -a [AMOUNT] passed, Amount must be a nubmer");
+						throw new ArgumentException("Error: Invalid value type for option.");
 
 					}
+					if (amountFrom <= 0) throw new ArgumentException("Error: Invalid value for option.");
 					opts.Add(ShowOpts.AmountFrom, amountFrom);
 					break;
 				case "-ato":
 					if (opts.ContainsKey(ShowOpts.AmountTo) || i + 1 >= args.Length)
 					{
-						throw new ArgumentException("Error: Invalid command syntax");
+						throw new ArgumentException("Error: Invalid command structure.");
 					}
 					i++;
 					// Check if passed amount is a double value
 					if (!double.TryParse(args[i], out double amountTo))
 					{
-						throw new ArgumentException("Invalid -a [AMOUNT] passed, Amount must be a nubmer");
-
+						throw new ArgumentException("Error: Invalid value type for option.");
 					}
+					if (amountTo <= 0) throw new ArgumentException("Error: Invalid value for option.");
 					opts.Add(ShowOpts.AmountTo, amountTo);
 					break;
 				case "-o":
 					if (opts.ContainsKey(AddOpts.FileName) || i + 1 >= args.Length)
 					{
-						throw new ArgumentException("Error: Invalid command syntax");
+						throw new ArgumentException("Error: Invalid command structure.");
 					}
 					i++;
 					opts.Add(ShowOpts.FileName, args[i]);
 					break;
 				default:
-					break;
+					throw new ArgumentException($"Error: Invalid option {args[i]}.");
 			}
 		}
 
@@ -233,26 +226,33 @@ public static class InputParser
 	{
 		Dictionary<Enum, object> opts = new Dictionary<Enum, object>();
 
+		if (args.Length == 1) throw new ArgumentException("Error: Invalid command structure.");
+
 		for (int i = 1; i < args.Length; i++)
 		{
 			if (args[i].ToLower() == "-id")
 			{
 				if (opts.ContainsKey(RemOpts.Id) || i + 1 >= args.Length)
-					throw new ArgumentException("Error: wrong format of REMOVE command.");
+					throw new ArgumentException("Error: Invalid command structure.");
 				i++;
+				if (!Int32.TryParse(args[i], out int value))
+				{
+					throw new ArgumentException("Error: Invalid value type for option.");
+				}
+				if (value < 0) throw new ArgumentException("Error: Invalid value for option.");
 				opts.Add(RemOpts.Id, Int32.Parse(args[i]));
 			}
 			else if (args[i].ToLower() == "-o")
 			{
 				if (opts.ContainsKey(RemOpts.FileName) || i + 1 >= args.Length)
-					throw new ArgumentException("Error: wrong format of REMOVE command.");
+					throw new ArgumentException("Error: Invalid command structure.");
 				i++;
 				opts.Add(RemOpts.FileName, args[i]);
 			}
 			else
 			{
-				Console.WriteLine($"Option being processed: {args[i].ToLower()}");
-				throw new ArgumentException("Error: wrong format of REMOVE command.");
+				// Console.WriteLine($"Option being processed: {args[i].ToLower()}");
+				throw new ArgumentException("Error: Invalid option.");
 			}
 		}
 
@@ -272,6 +272,23 @@ public static class InputParser
 			default:
 				return false;
 		}
+	}
+
+	private static bool ContainsAllReqOpts(Dictionary<Enum, object> opts)
+	{
+		if (opts.Keys.First() is AddOpts)
+		{
+			return opts.ContainsKey(AddOpts.Amount) &&
+				opts.ContainsKey(AddOpts.Category) &&
+				opts.ContainsKey(AddOpts.Date) &&
+				opts.ContainsKey(AddOpts.Name);
+		}
+		else if (opts.Keys.First() is RemOpts)
+		{
+			return opts.ContainsKey(RemOpts.Id);
+		}
+
+		return true;
 	}
 
 	private static Category GetCategory(string str)

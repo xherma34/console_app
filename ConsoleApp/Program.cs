@@ -20,7 +20,7 @@ class Program
 
 		if (args.Length == 0)
 		{
-			Console.Error.WriteLine("Error: No arguments passed");
+			throw new ArgumentException("Error: no arguments passed");
 		}
 
 		Dictionary<Enum, object> options = new Dictionary<Enum, object>();
