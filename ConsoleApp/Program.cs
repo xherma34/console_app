@@ -23,7 +23,18 @@ class Program
 			Console.Error.WriteLine("Error: No arguments passed");
 		}
 
-		Dictionary<Enum, object> options = InputParser.ParseArguments(args);
+		Dictionary<Enum, object> options = new Dictionary<Enum, object>();
+
+		try
+		{
+			options = InputParser.ParseArguments(args);
+		}
+		catch (ArgumentException e)
+		{
+			Console.WriteLine(e);
+			return;
+		}
+
 
 		// Get the enum type -> what command was passed
 		Type enumType = options.Keys.First().GetType();

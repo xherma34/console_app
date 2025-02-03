@@ -52,14 +52,23 @@ public class Expenses
 
 		string jsonStr = File.ReadAllText(FileName);
 
-		// The ! deletes the null warning, since checking if records is null in the next if statement
-		Records = JsonSerializer.Deserialize<List<Record>>(jsonStr)!;
+		// Check if the file is empty (or only whitespace)
+		if (string.IsNullOrWhiteSpace(jsonStr))
+		{
+			// If the file is empty, initialize Records to an empty list
+			Records = new List<Record>();
+		}
+		else
+		{
+			// Otherwise, deserialize the JSON string into the Records list
+			Records = JsonSerializer.Deserialize<List<Record>>(jsonStr) ?? new List<Record>();
+		}
 
 		// Check if the deserialization was succesful
 		if (Records == null) throw new ArgumentException($"Error: deserialization of {FileName} unsuccseful");
 
 		// Check if the .json isn't empty
-		if (Records.Count == 0) throw new ArgumentException($"Error: {FileName} is empty, no records were loaded");
+		// if (Records.Count == 0) throw new ArgumentException($"Error: {FileName} is empty, no records were loaded");
 
 	}
 

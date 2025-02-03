@@ -11,7 +11,6 @@ public static class InputParser
 	// TODO: Refactor the switches in the parse methods to be more clean
 	public static Dictionary<Enum, object> ParseArguments(string[] args)
 	{
-
 		if (args.Length == 0)
 		{
 			// TODO: implement try/catch blocks for this to work
@@ -20,20 +19,47 @@ public static class InputParser
 
 		string command = args[0].ToLower();
 
+		Dictionary<Enum, object> opts = new Dictionary<Enum, object>();
 
 		switch (command)
 		{
 			case "add":
-				return ParseAddOptions(args);
+				opts = ParseAddOptions(args);
+				break;
 			case "remove":
-				return ParseRemoveOptions(args);
+				opts = ParseRemoveOptions(args);
+				break;
 			case "show":
-				return ParseShowOptions(args);
+				opts = ParseShowOptions(args);
+				break;
 
 			default:
 				throw new ArgumentException("Error: invalid command passed to the program");
 		}
 
+		if (!ContainsAllReqOpts(opts))
+		{
+			throw new ArgumentException("Error: Command doesn't contain all required options Run the program with -h for help");
+		}
+
+		return opts;
+	}
+
+	private static bool ContainsAllReqOpts(Dictionary<Enum, object> opts)
+	{
+		if (opts.Keys.First() is AddOpts)
+		{
+			return opts.ContainsKey(AddOpts.Amount) &&
+				opts.ContainsKey(AddOpts.Category) &&
+				opts.ContainsKey(AddOpts.Date) &&
+				opts.ContainsKey(AddOpts.Name);
+		}
+		else if (opts.Keys.First() is RemOpts)
+		{
+			return opts.ContainsKey(RemOpts.Id);
+		}
+
+		return true;
 	}
 
 	// TODO: write tests for this
@@ -109,9 +135,9 @@ public static class InputParser
 				default:
 					break;
 			}
-
-
 		}
+
+
 
 		return opts;
 	}
