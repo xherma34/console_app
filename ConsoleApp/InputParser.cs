@@ -7,20 +7,33 @@ using System.Diagnostics;
 /// </summary>
 public static class InputParser
 {
-	// TODO: Create unit tests
-	// TODO: Refactor the switches in the parse methods to be more clean
+
+	public static string ErrCommandFormat = "Error: Invalid command format, run with -h for help.";
+	public static string ErrNoCommand = "Error: No command passed to the program.";
+	public static string ErrReqOptions = "Error: Command doesn't contain all required options.";
+	public static string ErrOptValType = "Error: Invalid value type for option.";
+	public static string ErrInvalidOpt = "Error: Invalid option passed to the command.";
+
+
+	/// <summary>
+	/// Method parses input arguments
+	/// </summary>
+	/// <param name="args">Input arguments</param>
+	/// <returns>Dictionary of parsed options</returns>
 	public static Dictionary<Enum, object> ParseArguments(string[] args)
 	{
+		// Check if command was selected in input argument
 		if (args.Length == 0)
 		{
-			// TODO: implement try/catch blocks for this to work
 			throw new ArgumentException("Error: No command passed to the program.");
 		}
 
+		// Extract the command from input
 		string command = args[0].ToLower();
 
 		Dictionary<Enum, object> opts = new Dictionary<Enum, object>();
 
+		// Execute logic
 		switch (command)
 		{
 			case "add":
@@ -34,23 +47,30 @@ public static class InputParser
 				break;
 
 			default:
-				throw new ArgumentException("Error: Invalid command passed to the program");
+				throw new ArgumentException($"Error: {command} is not a valid command.");
 		}
 
+		// Check if opts contains all required options for the command
 		if (!ContainsAllReqOpts(opts))
 		{
-			throw new ArgumentException("Error: Command doesn't contain all required options.");
+			throw new ArgumentException(ErrReqOptions);
 		}
 
 		return opts;
 	}
 
-	// TODO: write tests for this
+	/// <summary>
+	/// Parses options from ADD command
+	/// </summary>
+	/// <param name="args">Input arguments</param>
+	/// <returns>Parsed options</returns>
 	private static Dictionary<Enum, object> ParseAddOptions(string[] args)
 	{
+
 		Dictionary<Enum, object> opts = new Dictionary<Enum, object>();
 
-		if (args.Length == 1) throw new ArgumentException("Error: Invalid command structure.");
+		// Check for number of options
+		if (args.Length == 1) throw new ArgumentException(ErrCommandFormat);
 
 		// Get the dictionary of options
 		for (int i = 1; i < args.Length; i++)
@@ -58,66 +78,20 @@ public static class InputParser
 			switch (args[i].ToLower())
 			{
 				case "-n":
-					if (opts.ContainsKey(AddOpts.Name) || i + 1 >= args.Length || IsOption(args[i + 1]))
-					{
-						throw new ArgumentException("Error: Invalid command structure.");
-					}
-					opts.Add(AddOpts.Name, args[i + 1]);
-					i++;
+					ParseOption(ref i, args, opts, AddOpts.Name, x => x);
 					break;
-
 				case "-a":
-					if (opts.ContainsKey(AddOpts.Amount) || i + 1 >= args.Length)
-					{
-						throw new ArgumentException("Error: Invalid command structure.");
-					}
-					i++;
-
-					// Check if passed amount is a double value
-					if (!double.TryParse(args[i], out double value))
-					{
-						throw new ArgumentException("Error: Invalid value type for option.");
-					}
-
-					if (value <= 0) throw new ArgumentException("Error: Invalid value for option.");
-
-					opts.Add(AddOpts.Amount, value);
+					ParseOption(ref i, args, opts, AddOpts.Amount, x => double.Parse(x));
 					break;
-
 				case "-d":
-					if (opts.ContainsKey(AddOpts.Date) || i + 1 >= args.Length)
-					{
-						throw new ArgumentException("Error: Invalid command structure.");
-					}
-					i++;
-					if (!DateTime.TryParse(args[i], out DateTime date))
-					{
-						throw new ArgumentException("Error: Invalid value type for option.");
-					}
-					opts.Add(AddOpts.Date, date);
+					ParseOption(ref i, args, opts, AddOpts.Date, x => DateTime.Parse(x));
 					break;
-
 				case "-o":
-					if (opts.ContainsKey(AddOpts.FileName) || i + 1 >= args.Length)
-					{
-						throw new ArgumentException("Error: Invalid command structure.");
-					}
-					i++;
-					opts.Add(AddOpts.FileName, args[i]);
+					ParseOption(ref i, args, opts, AddOpts.FileName, x => x);
 					break;
 
 				case "-c":
-					if (opts.ContainsKey(AddOpts.Category) || i + 1 >= args.Length)
-					{
-						throw new ArgumentException("Error: Invalid command structure.");
-					}
-					i++;
-					Category category = GetCategory(args[i]);
-					if (category == Category.None)
-					{
-						throw new ArgumentException("Error: Invalid value type for option.");
-					}
-					opts.Add(AddOpts.Category, category);
+					ParseOption(ref i, args, opts, AddOpts.Category, x => GetCategory(x));
 					break;
 
 				default:
@@ -125,16 +99,14 @@ public static class InputParser
 			}
 		}
 
-
-
 		return opts;
 	}
 
-	// DateFrom,
-	// DateTo,
-	// AmountFrom,
-	// AmountTo,
-	// TODO: write tests for this
+	/// <summary>
+	/// Parses options for SHOW command
+	/// </summary>
+	/// <param name="args">Input arguments</param>
+	/// <returns>Parsed options</returns>
 	private static Dictionary<Enum, object> ParseShowOptions(string[] args)
 	{
 		Dictionary<Enum, object> opts = new Dictionary<Enum, object>();
@@ -154,65 +126,19 @@ public static class InputParser
 				case "show":
 					break;
 				case "-dfrom":
-					if (opts.ContainsKey(ShowOpts.DateFrom) || i + 1 >= args.Length)
-					{
-						throw new ArgumentException("Error: Invalid command structure.");
-					}
-					i++;
-					if (!DateTime.TryParse(args[i], out DateTime dateFrom))
-					{
-						throw new ArgumentException("Error: Invalid value type for option.");
-					}
-					opts.Add(ShowOpts.DateFrom, dateFrom);
+					ParseOption(ref i, args, opts, ShowOpts.DateFrom, x => DateTime.Parse(x));
 					break;
 				case "-dto":
-					if (opts.ContainsKey(ShowOpts.DateTo) || i + 1 >= args.Length)
-					{
-						throw new ArgumentException("Error: Invalid command structure.");
-					}
-					i++;
-					if (!DateTime.TryParse(args[i], out DateTime dateTo))
-					{
-						throw new ArgumentException("Error: Invalid value type for option.");
-					}
-					opts.Add(ShowOpts.DateTo, dateTo);
+					ParseOption(ref i, args, opts, ShowOpts.DateTo, x => DateTime.Parse(x));
 					break;
 				case "-afrom":
-					if (opts.ContainsKey(ShowOpts.AmountFrom) || i + 1 >= args.Length)
-					{
-						throw new ArgumentException("Error: Invalid command structure.");
-					}
-					i++;
-					// Check if passed amount is a double value
-					if (!double.TryParse(args[i], out double amountFrom))
-					{
-						throw new ArgumentException("Error: Invalid value type for option.");
-
-					}
-					if (amountFrom <= 0) throw new ArgumentException("Error: Invalid value for option.");
-					opts.Add(ShowOpts.AmountFrom, amountFrom);
+					ParseOption(ref i, args, opts, ShowOpts.AmountFrom, x => double.Parse(x));
 					break;
 				case "-ato":
-					if (opts.ContainsKey(ShowOpts.AmountTo) || i + 1 >= args.Length)
-					{
-						throw new ArgumentException("Error: Invalid command structure.");
-					}
-					i++;
-					// Check if passed amount is a double value
-					if (!double.TryParse(args[i], out double amountTo))
-					{
-						throw new ArgumentException("Error: Invalid value type for option.");
-					}
-					if (amountTo <= 0) throw new ArgumentException("Error: Invalid value for option.");
-					opts.Add(ShowOpts.AmountTo, amountTo);
+					ParseOption(ref i, args, opts, ShowOpts.AmountTo, x => double.Parse(x));
 					break;
 				case "-o":
-					if (opts.ContainsKey(AddOpts.FileName) || i + 1 >= args.Length)
-					{
-						throw new ArgumentException("Error: Invalid command structure.");
-					}
-					i++;
-					opts.Add(ShowOpts.FileName, args[i]);
+					ParseOption(ref i, args, opts, ShowOpts.FileName, x => x);
 					break;
 				default:
 					throw new ArgumentException($"Error: Invalid option {args[i]}.");
@@ -222,43 +148,108 @@ public static class InputParser
 		return opts;
 	}
 
+	/// <summary>
+	/// Parses options for REMOVE command
+	/// </summary>
+	/// <param name="args">Input arguments</param>
+	/// <returns>Parsed options</returns>
 	private static Dictionary<Enum, object> ParseRemoveOptions(string[] args)
 	{
 		Dictionary<Enum, object> opts = new Dictionary<Enum, object>();
 
-		if (args.Length == 1) throw new ArgumentException("Error: Invalid command structure.");
+		if (args.Length == 1) throw new ArgumentException(ErrCommandFormat);
 
 		for (int i = 1; i < args.Length; i++)
 		{
-			if (args[i].ToLower() == "-id")
+			switch (args[i].ToLower())
 			{
-				if (opts.ContainsKey(RemOpts.Id) || i + 1 >= args.Length)
-					throw new ArgumentException("Error: Invalid command structure.");
-				i++;
-				if (!Int32.TryParse(args[i], out int value))
-				{
-					throw new ArgumentException("Error: Invalid value type for option.");
-				}
-				if (value < 0) throw new ArgumentException("Error: Invalid value for option.");
-				opts.Add(RemOpts.Id, Int32.Parse(args[i]));
-			}
-			else if (args[i].ToLower() == "-o")
-			{
-				if (opts.ContainsKey(RemOpts.FileName) || i + 1 >= args.Length)
-					throw new ArgumentException("Error: Invalid command structure.");
-				i++;
-				opts.Add(RemOpts.FileName, args[i]);
-			}
-			else
-			{
-				// Console.WriteLine($"Option being processed: {args[i].ToLower()}");
-				throw new ArgumentException("Error: Invalid option.");
+				case "-id":
+					ParseOption(ref i, args, opts, RemOpts.Id, x => Int32.Parse(x));
+					break;
+				case "-o":
+					ParseOption(ref i, args, opts, RemOpts.FileName, x => x);
+					break;
+				default:
+					throw new ArgumentException($"Error: Invalid option {args[i]}.");
 			}
 		}
 
 		return opts;
 	}
 
+	/// <summary>
+	/// Generalized method which gets option and its value from input arguments, checks for any error in the format
+	/// and adds the option:value duo into the opts dictionary
+	/// </summary>
+	/// <typeparam name="T">Function type</typeparam>
+	/// <param name="index">Index of option in array of input arguments</param>
+	/// <param name="args">Array of input arguments</param>
+	/// <param name="opts">Dictionary of option:value</param>
+	/// <param name="optEnum">Enum type representing the type of option to be added into the dictionary</param>
+	/// <param name="parseFunc">Lambda function for any option which needs type casting/parsing (DateTime, double etc.)</param>
+	private static void ParseOption<T>(ref int index, string[] args, Dictionary<Enum, object> opts, Enum optEnum, Func<string, T> parseFunc)
+	{
+		// Check basic conditions: 
+		// Not a redundant option value || not out of bounds || the value for parsed option is not another option
+		if (opts.ContainsKey(optEnum) || index + 1 >= args.Length || IsOption(args[index + 1]))
+		{
+			throw new ArgumentException(ErrCommandFormat);
+		}
+
+		index++;
+
+		T value;
+		// Try to parse using the provided function
+		if (TryParseArgument(args[index], parseFunc, out value))
+		{
+			if ((value is int intVal && intVal < 0) ||
+				(value is double doubleVal && doubleVal < 0) ||
+				(value is Category categoryVal && categoryVal == Category.None))
+			{
+				throw new ArgumentException(ErrOptValType);
+			}
+
+			if (value == null)
+			{
+				throw new ArgumentException($"Error: ParseOption() function parameter returned null");
+			}
+
+			// Add the value and option into the dictionary
+			opts.Add(optEnum, value);
+		}
+		else
+		{
+			throw new ArgumentException(ErrCommandFormat);
+		}
+
+	}
+
+	/// <summary>
+	/// Method tries to perform parsing function passed
+	/// </summary>
+	/// <typeparam name="T">Type of the result</typeparam>
+	/// <param name="input">Input string</param>
+	/// <param name="parseFunc">Parse function which should parse the input string</param>
+	/// <param name="result">Result of the parse function</param>
+	/// <returns>True if input can be parsed via passed parse function</returns>
+	private static bool TryParseArgument<T>(string input, Func<string, T> parseFunc, out T result)
+	{
+		try
+		{
+			result = parseFunc(input);
+			return true;
+		}
+		catch
+		{
+#pragma warning disable CS8601 // Possible null reference assignment.
+			result = default;
+#pragma warning restore CS8601 // Possible null reference assignment.
+			return false;
+		}
+	}
+
+	/// <param name="opt"></param>
+	/// <returns>True if string opt is one of the options</returns>
 	private static bool IsOption(string opt)
 	{
 		switch (opt.ToLower())
@@ -274,6 +265,8 @@ public static class InputParser
 		}
 	}
 
+	/// <param name="opts">Options dictionary</param>
+	/// <returns>True if for passed enum the dictionary contains all required options</returns>
 	private static bool ContainsAllReqOpts(Dictionary<Enum, object> opts)
 	{
 		if (opts.Keys.First() is AddOpts)
@@ -291,6 +284,11 @@ public static class InputParser
 		return true;
 	}
 
+	/// <summary>
+	/// Parses string category into the enum Category
+	/// </summary>
+	/// <param name="str">String category</param>
+	/// <returns>Category enum value</returns>
 	private static Category GetCategory(string str)
 	{
 		switch (str.ToLower())
