@@ -12,19 +12,24 @@ public enum Category
 	None
 }
 
-
+/// <summary>
+/// Main program class
+/// </summary>
 class Program
 {
 	static void Main(string[] args)
 	{
 
+		// Check number of arguments passed
 		if (args.Length == 0)
 		{
 			throw new ArgumentException("Error: no arguments passed");
 		}
 
+		// Dictionary to store command options
 		Dictionary<Enum, object> options = new Dictionary<Enum, object>();
 
+		// Parsing
 		try
 		{
 			options = InputParser.ParseArguments(args);
@@ -40,10 +45,11 @@ class Program
 		Type enumType = options.Keys.First().GetType();
 
 
+		// Get file name to load fileName .json file records
 		string fileName = GetFileName(options);
 		Expenses expenses = new Expenses(fileName);
 
-		// TODO: Refactor idea -> use action<> and Dictionary pointer for call at the runtime
+		// Execute logic based on command passed from user
 		if (options.Keys.First() is AddOpts)
 		{
 			expenses.AddNewRecord(options);
@@ -60,8 +66,15 @@ class Program
 
 	}
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="options">Dictionary of command options</param>
+	/// <returns>File name extracted from options dictionary</returns>
+	/// <exception cref="ArgumentException"></exception>
 	private static string GetFileName(Dictionary<Enum, object> options)
 	{
+		// Error handle
 		if (options == null || options.Count == 0)
 			throw new ArgumentException("Internal error: Options dictionary is empty or null.");
 
@@ -92,6 +105,9 @@ class Program
 		return ""; // Return an empty string if no file name was found
 	}
 
+	/// <summary>
+	/// -h help print message
+	/// </summary>
 	public static void PrintHelp()
 	{
 		Console.WriteLine("You can run the program with these commands:");
