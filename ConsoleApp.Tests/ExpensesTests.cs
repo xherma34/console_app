@@ -35,10 +35,4 @@ public class ExpensesTests
         Assert.Equal(Category.Fun, loaded.Records?[4].Category);
         Assert.Equal(DateTime.Parse("11.6.2023"), loaded.Records?[5].Date);
     }
-
-    [Fact]
-    public void RemoveRecord_test1()
-    {
-        throw new NotImplementedException();
-    }
 }
